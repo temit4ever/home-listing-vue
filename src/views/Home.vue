@@ -1,18 +1,43 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+     <div class="">
+        <listing-group
+            v-for="(group, index) in groupByCity"
+            :key="index"
+            :city="index"
+            :listing="group"
+        ></listing-group>
+      </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import sampleData from '../assets/data/data.js'
+import ListingGroup from '../components/ListingGroup'
+import _ from 'lodash'
 
 export default {
-  name: 'Home',
+  name: 'Home.vue',
+  computed: {
+    groupByCity: function () {
+      const result = _.reduce(this.data, function (r, a) {
+        r[a.city] = r[a.city] || []
+        r[a.city].push(a)
+        return r
+      }, {})
+      console.log(result)
+      this.$store.commit('addData', result)
+      return result
+    }
+  },
   components: {
-    HelloWorld
+    ListingGroup
+  },
+  data: () => ({
+    data: sampleData
+  }),
+  methods: {
   }
 }
 </script>
